@@ -8,12 +8,14 @@ public class ListSearcher {
 		this.list = list;
 	}
 
-	public sequentialSearch() {
-//		TODO: implement this!
+	public int sequentialSearch(int x) {
+		for (int i : list) {
+			if (i == x) return i;
+		}
+		return -1;
 	}
 
-
-	int binarySearch(int low, int high, int x) {
+	public int binarySearch(int low, int high, int x) {
 		if (high >= low) {
 			int mid = low + (high - low) / 2;
 
@@ -27,5 +29,4 @@ public class ListSearcher {
 		}
 		return -1;
 	}
-
 }
