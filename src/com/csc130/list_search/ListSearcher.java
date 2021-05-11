@@ -19,11 +19,13 @@ public class ListSearcher {
 		if (high >= low) {
 			int mid = low + (high - low) / 2;
 
-			if (list.get(mid) == x)
+			if (list.get(mid) == x) {
 				return mid;
+			}
 
-			if (list.get(mid) > x)
+			if (list.get(mid) > x) {
 				return binarySearch(low, mid - 1, x);
+			}
 
 			return binarySearch(mid + 1, high, x);
 		}
