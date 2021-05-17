@@ -3,14 +3,13 @@ package com.csc130.graph_search;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Stack;
-import java.util.Vector;
 
-class Graph {
+public class Graph {
 	int V;
 
 	LinkedList<Integer>[] lists;
 
-	Graph(int V) {
+	public Graph(int V) {
 		this.V = V;
 		lists = new LinkedList[V];
 
@@ -19,59 +18,60 @@ class Graph {
 		}
 	}
 
-	void addEdge(int v, int w) {
+	public void addEdge(int v, int w) {
 		lists[v].add(w);
 	}
 
-	void iterativeDFS(int s) {
-		Vector<Boolean> visited = new Vector<>(V);
+	public void seedGraph() {
 		for (int i = 0; i < V; i++) {
-			visited.add(false);
+			for (int j = 0; j < V; j++) {
+				addEdge(i, j);
+			}
 		}
+	}
+
+	public void iterativeDFS(int startVertex) {
+		boolean[] visited = new boolean[V];
 
 		Stack<Integer> stack = new Stack<>();
 
-		stack.push(s);
+		stack.push(startVertex);
 
 		while (!stack.empty()) {
-			s = stack.peek();
+			startVertex = stack.peek();
 			stack.pop();
 
-			if (!visited.get(s)) {
-				System.out.print(s + " ");
-				visited.set(s, true);
-			}
+			visited[startVertex] = true;
 
-			for (int v : lists[s]) {
-				if (!visited.get(v))
-					stack.push(v);
+			for (int v : lists[startVertex]) {
+				if (!visited[v]) stack.push(v);
 			}
 		}
 	}
 
-	public void DFSRecursion(int startVertex, Vector<Boolean> visited){
-		visited = new Vector<>(V);
+	public void DFSRecursion(int startVertex) {
+		boolean[] visited = new boolean[V];
 		recursiveDFS(startVertex, visited);
 	}
 
-	public void recursiveDFS(int start, Vector<Boolean> visited){
-			visited.set(start, true);
-			for (int i = 0; i <lists[start].size() ; i++) {
-				int destination = lists[start].get(i);
-				if(!visited.get(destination))
-					DFSRecursion(destination, visited);
-			}
+	private void recursiveDFS(int start, boolean[] visited) {
+		visited[start] = true;
+		for (int i = 0; i < lists[start].size(); i++) {
+			int destination = lists[start].get(i);
+			if (!visited[destination])
+				recursiveDFS(destination, visited);
+		}
 	}
 
-	void queueBFS(int s) {
+	public void queueBFS(int startVertex) {
 		boolean[] visited = new boolean[V];
 		LinkedList<Integer> queue = new LinkedList<>();
-		visited[s] = true;
-		queue.add(s);
+		visited[startVertex] = true;
+		queue.add(startVertex);
 
 		while (queue.size() != 0) {
-			s = queue.poll();
-			Iterator<Integer> i = lists[s].listIterator();
+			startVertex = queue.poll();
+			Iterator<Integer> i = lists[startVertex].listIterator();
 			while (i.hasNext()) {
 				int n = i.next();
 				if (!visited[n]) {
@@ -80,9 +80,5 @@ class Graph {
 				}
 			}
 		}
-	}
-
-	void stackBFS(int s) {
-//		TODO: implement this too!
 	}
 }

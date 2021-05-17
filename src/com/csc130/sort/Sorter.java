@@ -5,13 +5,14 @@ import java.util.List;
 public class Sorter {
 
 	private final List<Integer> list;
+
 	public Sorter(List<Integer> list) {
 		this.list = list;
 	}
 
 	public void bubbleSort(int[] array) {
 		int n = array.length;
-		for (int i = 0; i < n-1; i++) {
+		for (int i = 0; i < n - 1; i++) {
 			for (int j = 0; j < n - i - 1; j++) {
 				if (array[j] > array[j + 1]) {
 					int temp = array[j];
@@ -42,15 +43,15 @@ public class Sorter {
 		if (begin < end) {
 			int partitionIndex = partition(array, begin, end);
 
-			quickSort(array, begin, partitionIndex-1);
-			quickSort(array, partitionIndex+1, end);
+			quickSort(array, begin, partitionIndex - 1);
+			quickSort(array, partitionIndex + 1, end);
 		}
 	}
 
 	// Partition method is for the quickSort method.
 	private int partition(int[] array, int begin, int end) {
 		int pivot = array[end];
-		int i = (begin-1);
+		int i = (begin - 1);
 
 		for (int j = begin; j < end; j++) {
 			if (array[j] <= pivot) {
@@ -61,19 +62,19 @@ public class Sorter {
 				array[j] = swapTemp;
 			}
 		}
-		int swapTemp = array[i+1];
-		array[i+1] = array[end];
+		int swapTemp = array[i + 1];
+		array[i + 1] = array[end];
 		array[end] = swapTemp;
 
-		return i+1;
+		return i + 1;
 	}
 
 	public void selectionSort(int[] array) {
 		int n = array.length;
 
-		for (int i = 0; i < n-1; i++) {
+		for (int i = 0; i < n - 1; i++) {
 			int min_idx = i;
-			for (int j = i+1; j < n; j++) {
+			for (int j = i + 1; j < n; j++) {
 				if (array[j] < array[min_idx]) {
 					min_idx = j;
 				}
@@ -111,8 +112,7 @@ public class Sorter {
 			if (L[i] <= R[j]) {
 				array[k] = L[i];
 				i++;
-			}
-			else {
+			} else {
 				array[k] = R[j];
 				j++;
 			}
@@ -139,7 +139,7 @@ public class Sorter {
 	public void sort(int[] array, int l, int r) {
 		if (l < r) {
 			// Find the middle point
-			int m =l+ (r-l)/2;
+			int m = l + (r - l) / 2;
 
 			// Sort first and second halves
 			sort(array, l, m);
