@@ -49,8 +49,18 @@ class Graph {
 		}
 	}
 
-	void recursiveDFS(int s) {
-//		TODO: implement this!
+	public void DFSRecursion(int startVertex, Vector<Boolean> visited){
+		visited = new Vector<>(V);
+		recursiveDFS(startVertex, visited);
+	}
+
+	public void recursiveDFS(int start, Vector<Boolean> visited){
+			visited.set(start, true);
+			for (int i = 0; i <lists[start].size() ; i++) {
+				int destination = lists[start].get(i);
+				if(!visited.get(destination))
+					DFSRecursion(destination, visited);
+			}
 	}
 
 	void queueBFS(int s) {
