@@ -1,19 +1,31 @@
 package com.csc130.sort;
 
-import java.util.List;
+import java.util.Arrays;
+import java.util.Random;
 
 public class Sorter {
 
-	private final List<Integer> list;
+	private int size;
+	private int[] array;
 
-	public Sorter(List<Integer> list) {
-		this.list = list;
+	public Sorter(int size) {
+		this.size = size;
+		this.array = new int[size];
 	}
 
-	public void bubbleSort(int[] array) {
-		int n = array.length;
-		for (int i = 0; i < n - 1; i++) {
-			for (int j = 0; j < n - i - 1; j++) {
+	public void seedArray() {
+		for (int i = 0; i < size; i++) {
+			array[i] = randomFill();
+		}
+	}
+
+	public static int randomFill() {
+		return (new Random()).nextInt();
+	}
+
+	public void bubbleSort() {
+		for (int i = 0; i < size - 1; i++) {
+			for (int j = 0; j < size - i - 1; j++) {
 				if (array[j] > array[j + 1]) {
 					int temp = array[j];
 					array[j] = array[j + 1];
@@ -24,57 +36,68 @@ public class Sorter {
 	}
 
 	public void insertionSort() {
-		int n = list.size();
 
-		for (int i = 1; i < n; i++) {
-			Integer temp = list.get(i);
+		for (int i = 1; i < size; i++) {
+			int temp = array[i];
 			int j = i - 1;
 
-			while (j >= 0 && temp < list.get(j)) {
-				list.set(j + 1, list.get(j));
+			while (j >= 0 && temp < array[j]) {
+				array[j + 1] = array[j];
 				j--;
 			}
 
-			list.set(j + 1, temp);
+			array[j + 1] = temp;
 		}
 	}
 
-	public void quickSort(int[] array, int begin, int end) {
-		if (begin < end) {
-			int partitionIndex = partition(array, begin, end);
+	public int getStart() {
+		return this.array[0];
+	}
 
-			quickSort(array, begin, partitionIndex - 1);
-			quickSort(array, partitionIndex + 1, end);
+	public int getEnd() {
+		return this.array[this.array.length - 1];
+	}
+
+	public int getLength() {
+		return this.array.length;
+	}
+
+	public void quickSort(int begin, int end) {
+
+		int partition = partition(begin, end);
+
+		if (partition - 1 > begin) {
+			quickSort(begin, partition - 1);
+		}
+		if (partition + 1 < end) {
+			quickSort(partition + 1, end);
 		}
 	}
 
-	// Partition method is for the quickSort method.
-	private int partition(int[] array, int begin, int end) {
+	public int partition(int start, int end) {
 		int pivot = array[end];
-		int i = (begin - 1);
 
-		for (int j = begin; j < end; j++) {
-			if (array[j] <= pivot) {
-				i++;
-
-				int swapTemp = array[i];
-				array[i] = array[j];
-				array[j] = swapTemp;
+		for (int i = start; i < end; i++) {
+			if (array[i] < pivot) {
+				int temp = array[start];
+				array[start] = array[i];
+				array[i] = temp;
+				start++;
 			}
 		}
-		int swapTemp = array[i + 1];
-		array[i + 1] = array[end];
-		array[end] = swapTemp;
 
-		return i + 1;
+		int temp = array[start];
+		array[start] = pivot;
+		array[end] = temp;
+
+		return start;
 	}
 
-	public void selectionSort(int[] array) {
-		int n = array.length;
+	public void selectionSort() {
 
-		for (int i = 0; i < n - 1; i++) {
+		for (int i = 0; i < size - 1; i++) {
 			int min_idx = i;
-			for (int j = i + 1; j < n; j++) {
+			for (int j = i + 1; j < size; j++) {
 				if (array[j] < array[min_idx]) {
 					min_idx = j;
 				}
@@ -86,67 +109,54 @@ public class Sorter {
 		}
 	}
 
-	public void mergeSort(int[] array, int l, int m, int r) {
-		// Find sizes of two subarrays to be merged
-		int n1 = m - l + 1;
-		int n2 = r - m;
+	public void mergeSort(Sorter array) {
+		int low = 0;
+		int high = array.getLength() - 1;
 
-		/* Create temp arrays */
-		int[] L = new int[n1];
-		int[] R = new int[n2];
+		// sort array `A[]` using a temporary array `temp`
+		int[] temp = Arrays.copyOf(this.array, array.getLength());
 
-		/*Copy data to temp arrays*/
-		for (int i = 0; i < n1; ++i)
-			L[i] = array[l + i];
-		for (int j = 0; j < n2; ++j)
-			R[j] = array[m + 1 + j];
+		// divide the array into blocks of size `m`
+		// m = [1, 2, 4, 8, 16…]
+		for (int m = 1; m <= high - low; m = 2 * m) {
+			// for m = 1, i = 0, 2, 4, 6, 8 …
+			// for m = 2, i = 0, 4, 8, 12 …
+			// for m = 4, i = 0, 8, 16 …
+			// …
+			for (int i = low; i < high; i += 2 * m) {
+				int from = i;
+				int mid = i + m - 1;
+				int to = Integer.min(i + 2 * m - 1, high);
 
-		/* Merge the temp arrays */
-
-		// Initial indexes of first and second subarrays
-		int i = 0, j = 0;
-
-		// Initial index of merged subarry array
-		int k = l;
-		while (i < n1 && j < n2) {
-			if (L[i] <= R[j]) {
-				array[k] = L[i];
-				i++;
-			} else {
-				array[k] = R[j];
-				j++;
+				merge(array, temp, from, mid, to);
 			}
-			k++;
-		}
-
-		/* Copy remaining elements of L[] if any */
-		while (i < n1) {
-			array[k] = L[i];
-			i++;
-			k++;
-		}
-
-		/* Copy remaining elements of R[] if any */
-		while (j < n2) {
-			array[k] = R[j];
-			j++;
-			k++;
 		}
 	}
 
-	// Main function that sorts arr[l..r] using
-	// mergeSort()
-	public void sort(int[] array, int l, int r) {
-		if (l < r) {
-			// Find the middle point
-			int m = l + (r - l) / 2;
+	public void merge(Sorter array, int[] temp, int from, int mid, int to) {
+		int k = from, i = from, j = mid + 1;
+		int[] A = Arrays.copyOf(this.array, array.getLength());
 
-			// Sort first and second halves
-			sort(array, l, m);
-			sort(array, m + 1, r);
+		// loop till no elements are left in the left and right runs
+		while (i <= mid && j <= to) {
+			if (A[i] < A[j]) {
+				temp[k++] = A[i++];
+			} else {
+				temp[k++] = A[j++];
+			}
+		}
 
-			// Merge the sorted halves
-			mergeSort(array, l, m, r);
+		// copy remaining elements
+		while (i <= array.getLength() / 2) {
+			temp[k++] = A[i++];
+		}
+
+        /* no need to copy the second half (since the remaining items
+           are already in their correct position in the temporary array) */
+
+		// copy back to the original array to reflect sorted order
+		for (i = from; i <= to; i++) {
+			A[i] = temp[i];
 		}
 	}
 }

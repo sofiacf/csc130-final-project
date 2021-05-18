@@ -2,6 +2,7 @@ package com.csc130;
 
 import com.csc130.graph_search.Graph;
 import com.csc130.list_search.ListSearcher;
+import com.csc130.sort.Sorter;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -13,7 +14,39 @@ public class Main {
 			System.out.println("Trial # " + i);
 			runGraphTrial(i);
 			runListSearchTrial(i);
+			runArraySortTrial(i);
 		}
+	}
+
+	private static void runArraySortTrial(int i) {
+		// Don't go past 20 in Math.pow. The recursion depth will be insane and you machine will take off.
+		int size = (int) Math.pow(20, i);
+		Sorter sort = new Sorter(size);
+		sort.seedArray();
+
+		LocalDateTime start = startTimer();
+		sort.bubbleSort();
+		stopTimer(start, "Bubble Sort");
+
+		start = startTimer();
+		sort.insertionSort();
+		stopTimer(start, "Insertion Sort");
+
+		int begin = 0;
+		int end = sort.getLength()-1;
+		start = startTimer();
+		sort.quickSort(begin, end);
+		stopTimer(start, "Quick Sort");
+
+		start = startTimer();
+		sort.selectionSort();
+		stopTimer(start, "Selection Sort");
+
+		start = startTimer();
+		sort.mergeSort(sort);
+		stopTimer(start, "Merge Sort");
+
+		System.out.println("________________________________________________________________________________________________________________");
 	}
 
 	private static void runListSearchTrial(int i) {
@@ -28,6 +61,7 @@ public class Main {
 		start = startTimer();
 		searcher.binarySearch((int) (size * .69));
 		stopTimer(start, "binarySearch");
+		System.out.println("________________________________________________________________________________________________________________");
 	}
 
 	private static void runGraphTrial(int i) {
